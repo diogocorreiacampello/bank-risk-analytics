@@ -1,0 +1,7 @@
+# Atlas Bank - Market Risk Dashboard
+# Tested with Python 3.13.15
+
+numpy==2.5.2
+pandas==3.0.6
+plotly==7.1.0
+streamlit==1.66.0

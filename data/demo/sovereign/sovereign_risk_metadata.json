@@ -1,0 +1,24 @@
+{
+    "project": "Atlas Bank",
+    "model": "Sovereign Historical Simulation",
+    "historical_start": "2023-10-11",
+    "historical_end": "2025-06-06",
+    "scenarios": 412,
+    "confidence_levels": [
+        0.95,
+        0.99
+    ],
+    "holding_period_days": 1,
+    "portfolio_market_value_eur": 225000000.0,
+    "var_95_convexity_eur": 1136142.2215808053,
+    "var_99_convexity_eur": 1699885.585297813,
+    "es_99_convexity_eur": 2403830.27166563,
+    "assumptions": [
+        "Constant positions and risk sensitivities",
+        "German 10Y yield used as proxy for German 5Y",
+        "First and second order bond repricing",
+        "Only complete daily sovereign yield scenarios",
+        "No FX effects",
+        "Research model - not production"
+    ]
+}

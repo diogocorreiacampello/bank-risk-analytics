@@ -216,3 +216,72 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ATLAS BANK - PROJECT SECURITY RULES V1
+
+# Original development notebook (may contain credentials)
+/notebooks/01_bank_data_generation.ipynb
+
+# Private backups and temporary files
+*backup*
+*.bak
+*.tmp
+*.log
+
+# Local Anaconda project metadata
+/anaconda_projects/
+
+# Development and experimental dashboard versions
+/dashboard/app_before_*.py
+/dashboard/app_navigation_test*.py
+
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Database dumps and local database files
+*.sql.gz
+*.dump
+*.backup
+*.sqlite
+*.sqlite3
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Atlas Bank research exports (local generated datasets)
+/notebooks/atlas_sovereign_research/
+
+# Publication candidate remains available:
+# notebooks/01_bank_data_generation_safe.ipynb
+
+# ATLAS BANK - PUBLIC RELEASE EXCLUSIONS V2
+
+# Temporary dashboard copies and tests
+/dashboard/app_demo_test.py
+/dashboard/app_pre_demo_backup.py
+
+# Original dashboard research exports
+/notebooks/atlas_dashboard_data/
+
+# Research notebook pending dedicated review
+/notebooks/01_bank_data_generation_safe.ipynb
+
+# Local research and intermediate outputs
+/notebooks/atlas_sovereign_research/
+
+# Local Streamlit configuration and secrets
+/.streamlit/secrets.toml
+
+# Local environment files
+/.env
+/.env.*
+!/.env.example
+
+# Local documentation backups
+/.local_backups/
+
+# Isolated release testing environment
+/.venv_release_test/
