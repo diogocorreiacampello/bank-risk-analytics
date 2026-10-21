@@ -71,7 +71,8 @@ selected_page = st.sidebar.radio(
         "Market Risk Analytics",
         "Stress Testing & Interest Rates",
         "Sovereign Risk Analytics",
-        "Portfolio Optimization"
+        "Portfolio Optimization",
+        "Credit Risk Analytics"
     ],
     key="atlas_selected_page"
 )
@@ -2494,3 +2495,14 @@ if selected_page == 'Portfolio Optimization':
         "Optimization results are research estimates, "
         "not investment recommendations."
     )
+
+
+# ============================================================
+# CREDIT RISK ANALYTICS
+# ============================================================
+
+if selected_page == "Credit Risk Analytics":
+
+    from credit_risk import render_credit_risk
+
+    render_credit_risk()
