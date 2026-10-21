@@ -128,7 +128,9 @@ Launch the dashboard:
 streamlit run dashboard/app.py
 ```
 
-Streamlit normally opens at http://localhost:8501.
+For local execution, Streamlit normally opens at http://localhost:8501.
+
+**Live dashboard:** [Open Atlas Bank](https://bank-risk-analytics-glwtzxzs8qkycsestguv4a.streamlit.app/)
 
 ## 7. Optional Database Integration
 
