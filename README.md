@@ -2,9 +2,9 @@
 
 An interactive banking risk analytics project built with **Python, SQL, Pandas, NumPy, Plotly and Streamlit**.
 
-Atlas Bank simulates a multi-asset investment portfolio and provides quantitative tools for analysing market risk, interest-rate sensitivity, stress scenarios, sovereign risk and portfolio optimization.
+Atlas Bank simulates a multi-asset investment portfolio and a banking loan book, providing quantitative tools for market risk, interest-rate sensitivity, stress testing, sovereign risk, portfolio optimization and credit risk analytics.
 
-> **Status:** Market Risk Dashboard available. Credit Risk and Liquidity Risk modules are under development.
+> **Status:** Market Risk and Credit Risk Analytics are implemented and available in the public Streamlit dashboard. Liquidity Risk is planned.
 
 ## 1. Project Overview
 
@@ -18,6 +18,8 @@ The current platform includes:
 - Sovereign bond and spread risk analysis
 - Risk concentration and contribution analysis
 - Sovereign portfolio optimization
+- Credit risk monitoring using PD, LGD, EAD and Expected Loss
+- Credit concentration analysis by segment, rating and customer
 
 ## 2. Technology Stack
 
@@ -51,6 +53,13 @@ Sovereign bond risk, instrument-level analysis and portfolio what-if simulations
 ### Portfolio Optimization
 Sovereign allocation scenarios and historical tail-risk comparisons.
 
+### Credit Risk Analytics
+Analysis of a simulated loan portfolio containing 13,000 loans across four credit segments: Corporate, SME, Mortgage and Consumer.
+
+The credit portfolio has approximately EUR 3.0 billion in Exposure at Default (EAD) and EUR 11.78 million in Expected Loss.
+
+The dashboard includes portfolio credit KPIs, segment-level exposure and expected-loss analysis, credit-rating risk profiles and aggregated customer concentration metrics.
+
 ## 4. Risk Methodologies
 
 ### Historical Value at Risk
@@ -72,16 +81,32 @@ Scenario analysis estimates the effect of changes in interest rates and other ma
 ### Sovereign Portfolio Optimization
 Alternative sovereign allocations are evaluated using historical tail-risk measures and model assumptions.
 
+### Credit Expected Loss
+Expected Loss (EL) is estimated at loan level using:
+
+`EL = PD x LGD x EAD`
+
+Where:
+- **PD** is Probability of Default.
+- **LGD** is Loss Given Default.
+- **EAD** is Exposure at Default.
+
+Portfolio Expected Loss is the sum of individual loan expected losses. The dashboard also reports EAD-weighted PD and aggregated concentration indicators.
+
+These are illustrative credit-risk calculations based on simulated data, not regulatory capital estimates.
+
 ## 5. Repository Structure
 
 ```text
 bank-risk-analytics/
 |-- dashboard/
-|   `-- app.py
+|   |-- app.py
+|   `-- credit_risk.py
 |-- data/
 |   `-- demo/
 |       |-- portfolio/
-|       `-- sovereign/
+|       |-- sovereign/
+|       `-- credit/
 |-- database/
 |   `-- 03_credit_risk_analysis.sql
 |-- src/
@@ -146,12 +171,13 @@ Database credentials must never be committed to Git.
 
 ## 8. Validation
 
-The Market Risk Dashboard was tested across five functional areas.
+The dashboard was tested across six functional areas using Streamlit AppTest.
 
-- 51 displayed financial metrics reconciled
-- 14 tables reconciled
-- 23 chart specifications reconciled
-- Five dashboard areas executed without exceptions
+- Original Market Risk reconciliation: 51 displayed financial metrics, 14 tables and 23 chart specifications
+- Combined dashboard component inventory: 58 metrics, 15 tables and 27 Plotly charts
+- Six dashboard areas executed without exceptions
+- Credit Risk Analytics validated with seven metrics, one table and four charts
+- Credit demo datasets reconciled against aggregated PostgreSQL results
 
 These checks confirm consistency between application versions, not independent validation of financial models.
 
@@ -164,12 +190,15 @@ These checks confirm consistency between application versions, not independent v
 - Duration and convexity are approximations.
 - Optimization is based on historical assumptions.
 - Transaction costs may be excluded from optimization results.
+- Credit risk calculations use simulated loan data and simplified assumptions.
 - The application is not a regulatory reporting system.
 
 ## 10. Roadmap
 
 ### Credit Risk
-Extend existing credit-risk calculations into interactive PD, LGD, EAD, expected-loss and concentration analytics.
+Implemented: interactive PD, LGD, EAD, Expected Loss and concentration analytics.
+
+Potential extensions include credit migration analysis, scenario-based credit stress testing and more advanced portfolio credit-risk modelling.
 
 ### Liquidity Risk
 Develop LCR, NSFR, funding structure and liquidity stress analytics.
