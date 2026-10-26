@@ -72,7 +72,8 @@ selected_page = st.sidebar.radio(
         "Stress Testing & Interest Rates",
         "Sovereign Risk Analytics",
         "Portfolio Optimization",
-        "Credit Risk Analytics"
+        "Credit Risk Analytics",
+        "Liquidity Risk Analytics"
     ],
     key="atlas_selected_page"
 )
@@ -2506,3 +2507,9 @@ if selected_page == "Credit Risk Analytics":
     from credit_risk import render_credit_risk
 
     render_credit_risk()
+
+
+if selected_page == "Liquidity Risk Analytics":
+    from liquidity_risk import render_liquidity_risk
+
+    render_liquidity_risk()

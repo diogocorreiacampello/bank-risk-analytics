@@ -2,9 +2,9 @@
 
 An interactive banking risk analytics project built with **Python, SQL, Pandas, NumPy, Plotly and Streamlit**.
 
-Atlas Bank simulates a multi-asset investment portfolio and a banking loan book, providing quantitative tools for market risk, interest-rate sensitivity, stress testing, sovereign risk, portfolio optimization and credit risk analytics.
+Atlas Bank simulates a multi-asset investment portfolio and a banking loan book, providing quantitative tools for market risk, interest-rate sensitivity, stress testing, sovereign risk, portfolio optimization, credit risk and liquidity risk analytics.
 
-> **Status:** Market Risk and Credit Risk Analytics are implemented and available in the public Streamlit dashboard. Liquidity Risk is planned.
+> **Status:** Market Risk and Credit Risk Analytics are publicly available. Liquidity Risk Analytics is implemented and validated locally, pending deployment.
 
 ## 1. Project Overview
 
@@ -20,6 +20,8 @@ The current platform includes:
 - Sovereign portfolio optimization
 - Credit risk monitoring using PD, LGD, EAD and Expected Loss
 - Credit concentration analysis by segment, rating and customer
+- Deposit composition, customer concentration and geographic analysis
+- Funding structure, maturity profiles and counterparty concentration
 
 ## 2. Technology Stack
 
@@ -60,6 +62,15 @@ The credit portfolio has approximately EUR 3.0 billion in Exposure at Default (E
 
 The dashboard includes portfolio credit KPIs, segment-level exposure and expected-loss analysis, credit-rating risk profiles and aggregated customer concentration metrics.
 
+### Liquidity Risk Analytics
+Analysis of a simulated deposit base containing 50,000 accounts and EUR 3.5 billion in deposits, together with 22 funding contracts denominated in EUR, GBP and USD.
+
+The dashboard includes deposit KPIs, customer segmentation, geographic distribution, concentration indicators, funding structure, maturity buckets and counterparty exposures.
+
+Funding amounts are reported separately by currency, without implicit FX conversion. Maturity buckets use a fixed reference date of **2026-10-26**.
+
+The module is implemented and tested locally; public deployment is pending.
+
 ## 4. Risk Methodologies
 
 ### Historical Value at Risk
@@ -95,18 +106,31 @@ Portfolio Expected Loss is the sum of individual loan expected losses. The dashb
 
 These are illustrative credit-risk calculations based on simulated data, not regulatory capital estimates.
 
+### Liquidity Concentration and Funding Analysis
+Deposit concentration is measured using Top 1, Top 5 and Top 10 depositor shares and the Herfindahl-Hirschman Index (HHI).
+
+`HHI = sum((Customer Deposit Balance / Total Deposit Balance)^2)`
+
+The effective number of depositors is approximated as `1 / HHI`.
+
+Funding analytics include amount-weighted interest rates, maturity buckets and counterparty concentration, calculated separately for each currency.
+
+These are descriptive liquidity and funding indicators, not regulatory Liquidity Coverage Ratio (LCR) or Net Stable Funding Ratio (NSFR) calculations.
+
 ## 5. Repository Structure
 
 ```text
 bank-risk-analytics/
 |-- dashboard/
 |   |-- app.py
-|   `-- credit_risk.py
+|   |-- credit_risk.py
+|   `-- liquidity_risk.py
 |-- data/
 |   `-- demo/
 |       |-- portfolio/
 |       |-- sovereign/
-|       `-- credit/
+|       |-- credit/
+|       `-- liquidity/  # Nine aggregated CSV datasets
 |-- database/
 |   `-- 03_credit_risk_analysis.sql
 |-- src/
@@ -171,13 +195,15 @@ Database credentials must never be committed to Git.
 
 ## 8. Validation
 
-The dashboard was tested across six functional areas using Streamlit AppTest.
+The dashboard was tested across seven functional areas using Streamlit AppTest.
 
 - Original Market Risk reconciliation: 51 displayed financial metrics, 14 tables and 23 chart specifications
-- Combined dashboard component inventory: 58 metrics, 15 tables and 27 Plotly charts
-- Six dashboard areas executed without exceptions
+- Combined dashboard component inventory: 66 metrics, 16 tables and 33 Plotly charts
+- Seven dashboard areas executed without exceptions
 - Credit Risk Analytics validated with seven metrics, one table and four charts
 - Credit demo datasets reconciled against aggregated PostgreSQL results
+- Liquidity Risk Analytics tested with eight metrics, one table and six Plotly charts
+- Nine liquidity CSV datasets validated and financially reconciled
 
 These checks confirm consistency between application versions, not independent validation of financial models.
 
@@ -191,6 +217,9 @@ These checks confirm consistency between application versions, not independent v
 - Optimization is based on historical assumptions.
 - Transaction costs may be excluded from optimization results.
 - Credit risk calculations use simulated loan data and simplified assumptions.
+- Liquidity analytics use simulated data and simplified assumptions.
+- LCR and NSFR are not calculated in the current version.
+- Funding balances in different currencies are not aggregated without FX conversion.
 - The application is not a regulatory reporting system.
 
 ## 10. Roadmap
@@ -201,7 +230,9 @@ Implemented: interactive PD, LGD, EAD, Expected Loss and concentration analytics
 Potential extensions include credit migration analysis, scenario-based credit stress testing and more advanced portfolio credit-risk modelling.
 
 ### Liquidity Risk
-Develop LCR, NSFR, funding structure and liquidity stress analytics.
+Implemented locally: deposit composition, concentration, funding structure, maturity analysis and counterparty exposures.
+
+Planned extensions: LCR, NSFR, deposit runoff scenarios, funding stress testing and liquidity buffer modelling.
 
 ### Engineering
 Improve automated tests, reproducibility, documentation and deployment readiness.

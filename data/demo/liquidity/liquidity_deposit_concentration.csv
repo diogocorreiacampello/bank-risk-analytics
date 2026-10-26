@@ -1,0 +1,2 @@
+customers,total_balance,largest_customer_balance,top5_balance,top10_balance,top1_share,top5_share,top10_share,customer_hhi
+50000,3500000000,14763497.3241,63652886.1171,116228410.655,0.00421814209261,0.0181865388906,0.03320811733,0.000334111238045
