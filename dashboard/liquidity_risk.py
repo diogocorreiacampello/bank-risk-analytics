@@ -227,3 +227,8 @@ def render_liquidity_risk():
 
     st.divider()
     render_liquidity_stress(segments)
+
+    from liquidity_buffer import render_liquidity_buffer
+
+    st.divider()
+    render_liquidity_buffer(segments)
