@@ -22,6 +22,7 @@ The current platform includes:
 - Credit concentration analysis by segment, rating and customer
 - Deposit composition, customer concentration and geographic analysis
 - Funding structure, maturity profiles and counterparty concentration
+- Scenario-based deposit runoff stress testing and segment contributions
 
 ## 2. Technology Stack
 
@@ -66,6 +67,8 @@ The dashboard includes portfolio credit KPIs, segment-level exposure and expecte
 Analysis of a simulated deposit base containing 50,000 accounts and EUR 3.5 billion in deposits, together with 22 funding contracts denominated in EUR, GBP and USD.
 
 The dashboard includes deposit KPIs, customer segmentation, geographic distribution, concentration indicators, funding structure, maturity buckets and counterparty exposures.
+
+An interactive Deposit Runoff Stress Testing section evaluates Base, Moderate Stress and Severe Stress scenarios, including estimated deposit outflows and segment-level contributions.
 
 Funding amounts are reported separately by currency, without implicit FX conversion. Maturity buckets use a fixed reference date of **2026-10-26**.
 
@@ -117,6 +120,34 @@ Funding analytics include amount-weighted interest rates, maturity buckets and c
 
 These are descriptive liquidity and funding indicators, not regulatory Liquidity Coverage Ratio (LCR) or Net Stable Funding Ratio (NSFR) calculations.
 
+### Deposit Runoff Stress Testing
+
+The deposit runoff model applies illustrative withdrawal assumptions to the simulated EUR 3.5 billion deposit base, segmented into Retail, SME and Corporate customers.
+
+| Customer segment | Base | Moderate Stress | Severe Stress |
+|---|---:|---:|---:|
+| Retail | 3% | 5% | 10% |
+| SME | 5% | 10% | 20% |
+| Corporate | 8% | 15% | 30% |
+
+For each segment and scenario:
+
+`Deposit Outflow = Segment Deposit Balance * Runoff Rate`
+
+Total scenario outflow is the sum of the three segment outflows.
+
+| Scenario | Estimated outflow | Share of total deposits |
+|---|---:|---:|
+| Base | EUR 150.61 million | 4.30% |
+| Moderate Stress | EUR 272.69 million | 7.79% |
+| Severe Stress | EUR 545.38 million | 15.58% |
+
+Segment contribution is calculated as the segment's outflow divided by total scenario outflow. Stress amplification is defined as the segment's outflow contribution divided by its share of total deposits.
+
+Under Severe Stress, Retail contributes approximately 40.34% of total outflows, Corporate 35.96% and SME 23.70%.
+
+These assumptions are illustrative rather than empirically calibrated or regulatory runoff rates. The model estimates deposit withdrawals only; it does not calculate available liquidity buffers, net cash outflows, liquidity survival horizons, LCR or NSFR.
+
 ## 5. Repository Structure
 
 ```text
@@ -124,7 +155,8 @@ bank-risk-analytics/
 |-- dashboard/
 |   |-- app.py
 |   |-- credit_risk.py
-|   `-- liquidity_risk.py
+|   |-- liquidity_risk.py
+|   `-- liquidity_stress.py
 |-- data/
 |   `-- demo/
 |       |-- portfolio/
@@ -198,12 +230,14 @@ Database credentials must never be committed to Git.
 The dashboard was tested across seven functional areas using Streamlit AppTest.
 
 - Original Market Risk reconciliation: 51 displayed financial metrics, 14 tables and 23 chart specifications
-- Combined dashboard component inventory: 66 metrics, 16 tables and 33 Plotly charts
+- Combined dashboard component inventory: 70 metrics, 17 tables and 35 Plotly charts
 - Seven dashboard areas executed without exceptions
 - Credit Risk Analytics validated with seven metrics, one table and four charts
 - Credit demo datasets reconciled against aggregated PostgreSQL results
-- Liquidity Risk Analytics tested with eight metrics, one table and six Plotly charts
+- Liquidity Risk Analytics, including deposit runoff stress testing, validated with 12 metrics, two tables and eight Plotly charts
 - Nine liquidity CSV datasets validated and financially reconciled
+- Deposit runoff calculations reconciled across three scenarios
+- Nine funding-currency and stress-scenario combinations passed Streamlit AppTest
 
 These checks confirm consistency between application versions, not independent validation of financial models.
 
@@ -218,6 +252,8 @@ These checks confirm consistency between application versions, not independent v
 - Transaction costs may be excluded from optimization results.
 - Credit risk calculations use simulated loan data and simplified assumptions.
 - Liquidity analytics use simulated data and simplified assumptions.
+- Deposit runoff rates are illustrative and are not empirically calibrated.
+- Deposit runoff outflows are not netted against available liquidity buffers.
 - LCR and NSFR are not calculated in the current version.
 - Funding balances in different currencies are not aggregated without FX conversion.
 - The application is not a regulatory reporting system.
@@ -230,9 +266,11 @@ Implemented: interactive PD, LGD, EAD, Expected Loss and concentration analytics
 Potential extensions include credit migration analysis, scenario-based credit stress testing and more advanced portfolio credit-risk modelling.
 
 ### Liquidity Risk
-Implemented locally: deposit composition, concentration, funding structure, maturity analysis and counterparty exposures.
+Implemented: deposit composition, concentration, funding structure, maturity analysis and counterparty exposures.
 
-Planned extensions: LCR, NSFR, deposit runoff scenarios, funding stress testing and liquidity buffer modelling.
+Implemented locally, pending deployment: three deposit runoff stress scenarios with segment-level outflow and contribution analysis.
+
+Planned extensions: LCR, NSFR, more advanced funding stress testing, liquidity buffer modelling and liquidity survival horizon analysis.
 
 ### Engineering
 Improve automated tests, reproducibility, documentation and deployment readiness.

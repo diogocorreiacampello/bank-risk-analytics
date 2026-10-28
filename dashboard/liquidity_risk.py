@@ -222,3 +222,8 @@ def render_liquidity_risk():
         "simulated data. LCR and NSFR are not calculated "
         "in this dashboard version."
     )
+
+    from liquidity_stress import render_liquidity_stress
+
+    st.divider()
+    render_liquidity_stress(segments)
