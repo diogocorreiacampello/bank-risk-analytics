@@ -4,7 +4,7 @@ An interactive banking risk analytics project built with **Python, SQL, Pandas, 
 
 Atlas Bank simulates a multi-asset investment portfolio and a banking loan book, providing quantitative tools for market risk, interest-rate sensitivity, stress testing, sovereign risk, portfolio optimization, credit risk and liquidity risk analytics.
 
-> **Status:** Market Risk, Credit Risk and Liquidity Risk Analytics, including Deposit Runoff Stress Testing, are publicly available. Liquidity Buffer & Survival Horizon is implemented and validated locally, pending deployment.
+> **Status:** Seven analytics areas are available in the public dashboard, including Deposit Runoff Stress Testing and Liquidity Buffer & Survival Horizon. An illustrative Liquidity Coverage Ratio (LCR) module has been implemented and validated locally, pending deployment.
 
 ## 1. Project Overview
 
@@ -72,9 +72,11 @@ An interactive Deposit Runoff Stress Testing section evaluates Base, Moderate St
 
 A Liquidity Buffer & Survival Horizon section models a simulated portfolio of liquid assets, haircut-adjusted available liquidity, 30-day cumulative deposit outflows and the first day of a simulated funding gap.
 
+An illustrative Liquidity Coverage Ratio (LCR) section estimates 30-day net cash outflows, assumed HQLA, liquidity coverage and sensitivity across five scenarios. This is a simplified research model, not regulatory LCR reporting.
+
 Funding amounts are reported separately by currency, without implicit FX conversion. Maturity buckets use a fixed reference date of **2026-10-26**.
 
-The deposit and funding analytics and Deposit Runoff Stress Testing are publicly deployed. The Liquidity Buffer & Survival Horizon extension is implemented and tested locally, pending deployment.
+The deposit and funding analytics, Deposit Runoff Stress Testing and Liquidity Buffer & Survival Horizon are publicly deployed. The illustrative LCR extension is implemented and tested locally, pending deployment.
 
 ## 4. Risk Methodologies
 
@@ -120,7 +122,7 @@ The effective number of depositors is approximated as `1 / HHI`.
 
 Funding analytics include amount-weighted interest rates, maturity buckets and counterparty concentration, calculated separately for each currency.
 
-These are descriptive liquidity and funding indicators, not regulatory Liquidity Coverage Ratio (LCR) or Net Stable Funding Ratio (NSFR) calculations.
+These are descriptive liquidity and funding indicators. A separate illustrative LCR model is documented below; regulatory LCR and NSFR calculations are not provided.
 
 ### Deposit Runoff Stress Testing
 
@@ -148,7 +150,7 @@ Segment contribution is calculated as the segment's outflow divided by total sce
 
 Under Severe Stress, Retail contributes approximately 40.34% of total outflows, Corporate 35.96% and SME 23.70%.
 
-These assumptions are illustrative rather than empirically calibrated or regulatory runoff rates. The standalone deposit runoff model estimates withdrawals only. The separate Liquidity Buffer & Survival Horizon extension compares these withdrawals with an illustrative liquidity reserve and estimates the first funding-gap day. Neither model calculates regulatory net cash outflows, LCR or NSFR.
+These assumptions are illustrative rather than empirically calibrated or regulatory runoff rates. The standalone deposit runoff model estimates withdrawals only. The separate Liquidity Buffer & Survival Horizon extension compares these withdrawals with an illustrative liquidity reserve and estimates the first funding-gap day. Neither model independently calculates regulatory net cash outflows, LCR or NSFR. The separate illustrative LCR module uses different assumptions and should not be interpreted as the coverage ratio of the liquidity-buffer simulation.
 
 ### Liquidity Buffer & Survival Horizon
 
@@ -183,6 +185,53 @@ Under Severe Stress, the remaining buffer is approximately EUR 5.40 million on d
 
 The model assumes a static, immediately available liquidity reserve and gross deposit outflows only. It excludes other cash inflows and outflows, additional funding, asset replenishment, intraday liquidity, and regulatory eligibility or operational constraints. The resulting coverage ratio is a simulation metric, not the regulatory Liquidity Coverage Ratio (LCR). A negative buffer indicates a simulated funding gap, not a prediction of bank failure.
 
+### Illustrative Liquidity Coverage Ratio (LCR)
+
+The LCR extension estimates a simplified 30-day liquidity coverage ratio using simulated EUR deposits, assumed High Quality Liquid Assets (HQLA) and illustrative cash inflows. It is designed for financial risk analytics and scenario analysis, not regulatory reporting.
+
+`Illustrative LCR = Assumed HQLA / Illustrative 30-Day Net Cash Outflows * 100`
+
+`Illustrative Net Cash Outflows = Gross Cash Outflows - Eligible Cash Inflows`
+
+The base model applies the following assumptions:
+
+| Component | Illustrative assumption |
+|---|---|
+| Retail deposits | 70% stable at 5% runoff; 30% less stable at 10% runoff |
+| SME deposits | 10% runoff |
+| Corporate deposits | 40% runoff |
+| Assumed HQLA | EUR 100 million cash, EUR 150 million central bank reserves and EUR 200 million sovereign bonds |
+| HQLA haircuts | 0% in this illustrative LCR model |
+| Gross cash inflows | EUR 50 million |
+| Eligible inflows | Capped at 75% of gross outflows |
+
+The HQLA assumptions in this model are separate from the haircut-adjusted EUR 440 million liquidity buffer used in the survival-horizon analysis. They are not interchangeable regulatory classifications.
+
+**Base scenario results:**
+
+| Metric | Illustrative result |
+|---|---:|
+| Gross 30-day outflows | EUR 469.13 million |
+| Eligible 30-day inflows | EUR 50.00 million |
+| Net 30-day outflows | EUR 419.13 million |
+| Assumed HQLA | EUR 450.00 million |
+| Illustrative LCR | 107.37% |
+| HQLA surplus / deficit | EUR +30.87 million |
+
+**Sensitivity analysis:**
+
+| Scenario | Illustrative LCR | HQLA surplus / deficit |
+|---|---:|---:|
+| Base | 107.37% | EUR +30.87 million |
+| Lower Retail Stability | 102.01% | EUR +8.87 million |
+| Higher Corporate Runoff | 92.88% | EUR -34.50 million |
+| Reduced HQLA | 95.44% | EUR -19.13 million |
+| Combined Stress | 78.97% | EUR -106.50 million |
+
+The five scenarios assess the sensitivity of the simplified liquidity coverage estimate to retail deposit stability, corporate withdrawals and available HQLA.
+
+The model does not establish regulatory HQLA eligibility, encumbrance, operational requirements, deposit stability classifications or the complete contractual cash-flow profile. It excludes a comprehensive treatment of secured funding, additional inflows and outflows, foreign-currency liquidity and regulatory reporting adjustments. A result above or below 100% must not be interpreted as a verified regulatory compliance outcome.
+
 ## 5. Repository Structure
 
 ```text
@@ -192,7 +241,8 @@ bank-risk-analytics/
 |   |-- credit_risk.py
 |   |-- liquidity_risk.py
 |   |-- liquidity_stress.py
-|   `-- liquidity_buffer.py
+|   |-- liquidity_buffer.py
+|   `-- liquidity_lcr.py
 |-- data/
 |   `-- demo/
 |       |-- portfolio/
@@ -266,16 +316,18 @@ Database credentials must never be committed to Git.
 The dashboard was tested across seven functional areas using Streamlit AppTest.
 
 - Original Market Risk reconciliation: 51 displayed financial metrics, 14 tables and 23 chart specifications
-- Combined dashboard component inventory: 74 metrics, 19 tables and 37 Plotly charts
+- Combined dashboard component inventory: 78 metrics, 22 tables and 40 Plotly charts
 - Seven dashboard areas executed without exceptions
 - Credit Risk Analytics validated with seven metrics, one table and four charts
 - Credit demo datasets reconciled against aggregated PostgreSQL results
-- Liquidity Risk Analytics, including deposit runoff stress testing and liquidity buffer analytics, validated with 16 metrics, four tables and ten Plotly charts
+- Liquidity Risk Analytics, including deposit runoff, liquidity buffer and illustrative LCR analytics, validated with 20 metrics, seven tables and 13 Plotly charts
 - Nine liquidity CSV datasets validated and financially reconciled
 - Deposit runoff calculations reconciled across three scenarios
 - Nine funding-currency and stress-scenario combinations passed Streamlit AppTest
 - Liquidity buffer calculations reconciled across all three runoff scenarios, including the Severe Stress breach on day 18
-- Full liquidity page tested with independent funding-currency, runoff-scenario and buffer-scenario selectors
+- Full liquidity page tested with independent funding-currency, runoff-scenario, buffer-scenario and LCR-sensitivity selectors
+- Illustrative LCR reconciled across five sensitivity scenarios, including Base 107.37% and Combined Stress 78.97%
+- All seven dashboard pages passed Streamlit AppTest with 78 metrics, 22 tables and 40 Plotly charts
 
 These checks confirm consistency between application versions, not independent validation of financial models.
 
@@ -294,7 +346,7 @@ These checks confirm consistency between application versions, not independent v
 - Deposit runoff outflows are compared with a separately simulated, haircut-adjusted liquidity buffer; the buffer is not based on observed bank assets.
 - Daily runoff timing, liquidity availability and asset haircuts are illustrative rather than empirically calibrated.
 - The survival horizon is limited to a 30-day simulation and does not incorporate other funding sources or cash flows.
-- LCR and NSFR are not calculated in the current version.
+- An illustrative LCR is calculated, but it is not a regulatory LCR assessment. Regulatory LCR and NSFR are not calculated.
 - Funding balances in different currencies are not aggregated without FX conversion.
 - The application is not a regulatory reporting system.
 
@@ -310,9 +362,11 @@ Implemented: deposit composition, concentration, funding structure, maturity ana
 
 Implemented and publicly deployed: three deposit runoff stress scenarios with segment-level outflow and contribution analysis.
 
-Implemented locally, pending deployment: haircut-adjusted liquidity buffer, 30-day cash outflow profiles, coverage gaps and simulated survival horizons.
+Implemented and publicly deployed: haircut-adjusted liquidity buffer, 30-day cash outflow profiles, coverage gaps and simulated survival horizons.
 
-Planned extensions: regulatory LCR and NSFR modelling, more advanced funding stress testing, empirically calibrated liquidity buffers, dynamic cash-flow modelling and extended survival horizon analysis.
+Implemented locally, pending deployment: illustrative LCR with assumed HQLA, 30-day net outflows and five sensitivity scenarios.
+
+Planned extensions: more comprehensive regulatory LCR and NSFR modelling, advanced funding stress testing, empirically calibrated liquidity buffers, dynamic cash-flow modelling and extended survival horizon analysis.
 
 ### Engineering
 Improve automated tests, reproducibility, documentation and deployment readiness.
