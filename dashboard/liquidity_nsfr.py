@@ -369,17 +369,17 @@ def render_nsfr():
 
     c2.metric(
         "Available Stable Funding",
-        f"EUR {metrics['total_asf'] / 1e6:,.2f}M",
+        f"€{metrics['total_asf'] / 1e6:,.2f}M",
     )
 
     c3.metric(
         "Required Stable Funding",
-        f"EUR {metrics['total_rsf'] / 1e6:,.2f}M",
+        f"€{metrics['total_rsf'] / 1e6:,.2f}M",
     )
 
     c4.metric(
         "ASF - RSF Gap",
-        f"EUR {metrics['funding_gap'] / 1e6:,.2f}M",
+        f"€{metrics['funding_gap'] / 1e6:,.2f}M",
     )
 
     st.caption(

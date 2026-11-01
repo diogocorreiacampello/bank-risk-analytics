@@ -40,7 +40,6 @@ def format_amount(value, currency="EUR"):
 
 
 def render_liquidity_risk():
-    st.title("Liquidity Risk Analytics")
     st.caption(
         "Deposit and funding analytics based on simulated "
         "banking data. Not regulatory liquidity reporting."

@@ -47,9 +47,9 @@ def eur_millions(value):
 
 
 st.title("Atlas Bank")
-st.subheader("Market Risk Analytics Dashboard")
+st.subheader("Bank Risk Analytics Dashboard")
 st.caption(
-    "Historical Value at Risk | Expected Shortfall | Stress Testing"
+    "Market Risk | Credit Risk | Liquidity Risk | Portfolio Analytics"
 )
 
 st.divider()
