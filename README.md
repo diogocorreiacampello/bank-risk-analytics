@@ -4,7 +4,7 @@ An interactive banking risk analytics project built with **Python, SQL, Pandas, 
 
 Atlas Bank simulates a multi-asset investment portfolio and a banking loan book, providing quantitative tools for market risk, interest-rate sensitivity, stress testing, sovereign risk, portfolio optimization, credit risk and liquidity risk analytics.
 
-> **Status:** Seven analytics areas are available in the public dashboard, including Deposit Runoff Stress Testing and Liquidity Buffer & Survival Horizon. An illustrative Liquidity Coverage Ratio (LCR) module has been implemented and validated locally, pending deployment.
+> **Status:** Seven analytics areas are available in the public dashboard, including deposit runoff, liquidity buffer and illustrative LCR analytics. An illustrative Net Stable Funding Ratio (NSFR) module has been implemented and validated locally, pending deployment.
 
 ## 1. Project Overview
 
@@ -74,9 +74,11 @@ A Liquidity Buffer & Survival Horizon section models a simulated portfolio of li
 
 An illustrative Liquidity Coverage Ratio (LCR) section estimates 30-day net cash outflows, assumed HQLA, liquidity coverage and sensitivity across five scenarios. This is a simplified research model, not regulatory LCR reporting.
 
+An illustrative Net Stable Funding Ratio (NSFR) section estimates available and required stable funding using simulated deposits, EUR funding maturities, credit exposures and investment exposure proxies. Five sensitivity scenarios explore classification and funding assumptions. This is not regulatory NSFR reporting.
+
 Funding amounts are reported separately by currency, without implicit FX conversion. Maturity buckets use a fixed reference date of **2026-10-26**.
 
-The deposit and funding analytics, Deposit Runoff Stress Testing and Liquidity Buffer & Survival Horizon are publicly deployed. The illustrative LCR extension is implemented and tested locally, pending deployment.
+The deposit and funding analytics, Deposit Runoff Stress Testing, Liquidity Buffer & Survival Horizon and illustrative LCR are publicly deployed. The illustrative NSFR extension is implemented and tested locally, pending deployment.
 
 ## 4. Risk Methodologies
 
@@ -232,6 +234,72 @@ The five scenarios assess the sensitivity of the simplified liquidity coverage e
 
 The model does not establish regulatory HQLA eligibility, encumbrance, operational requirements, deposit stability classifications or the complete contractual cash-flow profile. It excludes a comprehensive treatment of secured funding, additional inflows and outflows, foreign-currency liquidity and regulatory reporting adjustments. A result above or below 100% must not be interpreted as a verified regulatory compliance outcome.
 
+### Illustrative Net Stable Funding Ratio (NSFR)
+
+The NSFR extension estimates structural funding stability over a
+one-year horizon using simulated banking data and explicitly assumed
+Available Stable Funding (ASF) and Required Stable Funding (RSF) factors.
+
+`Illustrative NSFR = Total ASF / Total RSF * 100`
+
+`Stable Funding Gap = Total ASF - Total RSF`
+
+**Data and modelling assumptions:**
+
+- Deposit ASF factors: Retail 90%, SME 50%, Corporate 0%.
+- EUR funding ASF factors: over 365 days 100%, 181-365 days 50%,
+  and shorter maturity buckets 0%.
+- GBP and USD funding are excluded from this initial EUR model;
+  no implicit currency conversion is performed.
+- Credit RSF: 85% of simulated loan EAD across Corporate,
+  Mortgage, SME and Consumer segments.
+- Investment RSF: European Sovereigns and US Treasuries 5%;
+  Short-Term Instruments 15%; Corporate Bonds and Equities 85%;
+  Alternative, Commodity and FX exposure proxies 100%.
+- Credit EAD and investment risk exposures are illustrative asset
+  proxies, not reconciled accounting carrying amounts.
+- The separate LCR HQLA assumptions are not added as new NSFR assets.
+- No unobserved regulatory capital balance is invented.
+
+**Baseline results:**
+
+| Component | EUR million |
+|---|---:|
+| ASF - Deposits | 2,303.12 |
+| ASF - EUR Funding | 414.84 |
+| **Total ASF** | **2,717.96** |
+| RSF - Credit | 2,550.00 |
+| RSF - Investments | 630.00 |
+| **Total RSF** | **3,180.00** |
+| **Illustrative NSFR** | **85.47%** |
+| Stable funding gap | -462.04 |
+
+**Sensitivity analysis:**
+
+| Scenario | Illustrative NSFR | Stable funding gap (EUR million) |
+|---|---:|---:|
+| Baseline V1 | 85.47% | -462.04 |
+| Exclude FX Proxy | 88.25% | -362.04 |
+| Corporate ASF 50% | 95.75% | -135.16 |
+| Higher Credit RSF | 74.88% | -912.04 |
+| Combined Alternative | 98.86% | -35.16 |
+
+The scenarios explore uncertainty in deposit classification, asset
+classification and credit funding requirements. They are not
+probability-weighted forecasts or regulatory stress-test results.
+
+**Limitations:** The model does not establish contractual deposit
+stability, complete residual maturities, regulatory asset eligibility,
+encumbrance, collateral treatment, loan performance classification,
+or full balance-sheet reconciliation. Funding type and maturity
+are available as separate aggregates rather than a joint breakdown.
+FX is treated as an investment exposure proxy in the baseline,
+although its classification as an owned asset is unresolved.
+
+All ASF and RSF factors are illustrative. The NSFR results, including
+whether they are above or below 100%, must not be interpreted as
+verified regulatory compliance or non-compliance.
+
 ## 5. Repository Structure
 
 ```text
@@ -242,7 +310,8 @@ bank-risk-analytics/
 |   |-- liquidity_risk.py
 |   |-- liquidity_stress.py
 |   |-- liquidity_buffer.py
-|   `-- liquidity_lcr.py
+|   |-- liquidity_lcr.py
+|   `-- liquidity_nsfr.py
 |-- data/
 |   `-- demo/
 |       |-- portfolio/
@@ -316,18 +385,18 @@ Database credentials must never be committed to Git.
 The dashboard was tested across seven functional areas using Streamlit AppTest.
 
 - Original Market Risk reconciliation: 51 displayed financial metrics, 14 tables and 23 chart specifications
-- Combined dashboard component inventory: 78 metrics, 22 tables and 40 Plotly charts
+- Combined dashboard component inventory: 82 metrics, 24 tables and 42 Plotly charts
 - Seven dashboard areas executed without exceptions
 - Credit Risk Analytics validated with seven metrics, one table and four charts
 - Credit demo datasets reconciled against aggregated PostgreSQL results
-- Liquidity Risk Analytics, including deposit runoff, liquidity buffer and illustrative LCR analytics, validated with 20 metrics, seven tables and 13 Plotly charts
+- Liquidity Risk Analytics, including deposit runoff, liquidity buffer, illustrative LCR and NSFR analytics, validated with 24 metrics, nine tables and 15 Plotly charts
 - Nine liquidity CSV datasets validated and financially reconciled
 - Deposit runoff calculations reconciled across three scenarios
 - Nine funding-currency and stress-scenario combinations passed Streamlit AppTest
 - Liquidity buffer calculations reconciled across all three runoff scenarios, including the Severe Stress breach on day 18
 - Full liquidity page tested with independent funding-currency, runoff-scenario, buffer-scenario and LCR-sensitivity selectors
 - Illustrative LCR reconciled across five sensitivity scenarios, including Base 107.37% and Combined Stress 78.97%
-- All seven dashboard pages passed Streamlit AppTest with 78 metrics, 22 tables and 40 Plotly charts
+- All seven dashboard pages passed Streamlit AppTest with 82 metrics, 24 tables and 42 Plotly charts
 
 These checks confirm consistency between application versions, not independent validation of financial models.
 
@@ -346,7 +415,7 @@ These checks confirm consistency between application versions, not independent v
 - Deposit runoff outflows are compared with a separately simulated, haircut-adjusted liquidity buffer; the buffer is not based on observed bank assets.
 - Daily runoff timing, liquidity availability and asset haircuts are illustrative rather than empirically calibrated.
 - The survival horizon is limited to a 30-day simulation and does not incorporate other funding sources or cash flows.
-- An illustrative LCR is calculated, but it is not a regulatory LCR assessment. Regulatory LCR and NSFR are not calculated.
+- Illustrative LCR and NSFR models are calculated, but neither constitutes a regulatory assessment. Regulatory LCR and NSFR reporting calculations are not provided.
 - Funding balances in different currencies are not aggregated without FX conversion.
 - The application is not a regulatory reporting system.
 
@@ -364,9 +433,11 @@ Implemented and publicly deployed: three deposit runoff stress scenarios with se
 
 Implemented and publicly deployed: haircut-adjusted liquidity buffer, 30-day cash outflow profiles, coverage gaps and simulated survival horizons.
 
-Implemented locally, pending deployment: illustrative LCR with assumed HQLA, 30-day net outflows and five sensitivity scenarios.
+Implemented and publicly deployed: illustrative LCR with assumed HQLA, 30-day net outflows and five sensitivity scenarios.
 
-Planned extensions: more comprehensive regulatory LCR and NSFR modelling, advanced funding stress testing, empirically calibrated liquidity buffers, dynamic cash-flow modelling and extended survival horizon analysis.
+Implemented locally, pending deployment: illustrative NSFR with ASF/RSF breakdowns, a structural funding gap and five sensitivity scenarios.
+
+Planned extensions: more comprehensive regulatory LCR and NSFR modelling, including balance-sheet reconciliation, advanced funding stress testing, empirically calibrated liquidity buffers, dynamic cash-flow modelling and extended survival horizon analysis.
 
 ### Engineering
 Improve automated tests, reproducibility, documentation and deployment readiness.

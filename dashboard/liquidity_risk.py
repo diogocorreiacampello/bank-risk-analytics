@@ -221,7 +221,7 @@ def render_liquidity_risk():
         "Liquidity metrics are illustrative and based on "
         "simulated data. An illustrative LCR model is included "
         "below; it is not regulatory liquidity reporting. "
-        "NSFR is not calculated in this dashboard version."
+        "Illustrative LCR and NSFR models are included below; neither represents regulatory liquidity reporting."
     )
 
     from liquidity_stress import render_liquidity_stress
@@ -238,3 +238,8 @@ def render_liquidity_risk():
 
     st.divider()
     render_lcr(segments)
+
+    from liquidity_nsfr import render_nsfr
+
+    st.divider()
+    render_nsfr()
