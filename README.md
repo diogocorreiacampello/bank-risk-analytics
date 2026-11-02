@@ -4,7 +4,7 @@ An interactive banking risk analytics project built with **Python, SQL, Pandas, 
 
 Atlas Bank simulates a multi-asset investment portfolio and a banking loan book, providing quantitative tools for market risk, interest-rate sensitivity, stress testing, sovereign risk, portfolio optimization, credit risk and liquidity risk analytics.
 
-> **Status:** Seven analytics areas are available in the public dashboard, including deposit runoff, liquidity buffer and illustrative LCR analytics. An illustrative Net Stable Funding Ratio (NSFR) module has been implemented and validated locally, pending deployment.
+> **Status:** Version 1 of the Atlas Bank platform is complete and publicly deployed, with seven analytics areas covering market risk, credit risk, liquidity risk and portfolio analytics, including illustrative LCR and NSFR models.
 
 ## 1. Project Overview
 
@@ -39,7 +39,7 @@ The current platform includes:
 
 The public dashboard runs on local demonstration datasets without requiring a PostgreSQL connection.
 
-## 3. Market Risk Dashboard
+## 3. Risk Analytics Dashboard
 
 ### Portfolio Overview
 Portfolio exposures, risk indicators, historical P&L and executive risk monitoring.
@@ -78,7 +78,7 @@ An illustrative Net Stable Funding Ratio (NSFR) section estimates available and 
 
 Funding amounts are reported separately by currency, without implicit FX conversion. Maturity buckets use a fixed reference date of **2026-10-26**.
 
-The deposit and funding analytics, Deposit Runoff Stress Testing, Liquidity Buffer & Survival Horizon and illustrative LCR are publicly deployed. The illustrative NSFR extension is implemented and tested locally, pending deployment.
+The deposit and funding analytics, Deposit Runoff Stress Testing, Liquidity Buffer & Survival Horizon, illustrative LCR and illustrative NSFR are publicly deployed.
 
 ## 4. Risk Methodologies
 
@@ -394,7 +394,7 @@ The dashboard was tested across seven functional areas using Streamlit AppTest.
 - Deposit runoff calculations reconciled across three scenarios
 - Nine funding-currency and stress-scenario combinations passed Streamlit AppTest
 - Liquidity buffer calculations reconciled across all three runoff scenarios, including the Severe Stress breach on day 18
-- Full liquidity page tested with independent funding-currency, runoff-scenario, buffer-scenario and LCR-sensitivity selectors
+- Full liquidity page tested with five independent selectors: funding currency, runoff scenario, buffer stress scenario, LCR sensitivity scenario and NSFR sensitivity scenario
 - Illustrative LCR reconciled across five sensitivity scenarios, including Base 107.37% and Combined Stress 78.97%
 - All seven dashboard pages passed Streamlit AppTest with 82 metrics, 24 tables and 42 Plotly charts
 
@@ -419,7 +419,9 @@ These checks confirm consistency between application versions, not independent v
 - Funding balances in different currencies are not aggregated without FX conversion.
 - The application is not a regulatory reporting system.
 
-## 10. Roadmap
+## 10. Project Status & Potential Extensions
+
+Version 1 is complete and publicly deployed. The following extensions are optional future research opportunities and are not required for the current project release.
 
 ### Credit Risk
 Implemented: interactive PD, LGD, EAD, Expected Loss and concentration analytics.
@@ -435,12 +437,12 @@ Implemented and publicly deployed: haircut-adjusted liquidity buffer, 30-day cas
 
 Implemented and publicly deployed: illustrative LCR with assumed HQLA, 30-day net outflows and five sensitivity scenarios.
 
-Implemented locally, pending deployment: illustrative NSFR with ASF/RSF breakdowns, a structural funding gap and five sensitivity scenarios.
+Implemented and publicly deployed: illustrative NSFR with ASF/RSF breakdowns, a structural funding gap and five sensitivity scenarios.
 
-Planned extensions: more comprehensive regulatory LCR and NSFR modelling, including balance-sheet reconciliation, advanced funding stress testing, empirically calibrated liquidity buffers, dynamic cash-flow modelling and extended survival horizon analysis.
+Potential future extensions: more comprehensive regulatory LCR and NSFR modelling, including balance-sheet reconciliation, advanced funding stress testing, empirically calibrated liquidity buffers, dynamic cash-flow modelling and extended survival horizon analysis.
 
 ### Engineering
-Improve automated tests, reproducibility, documentation and deployment readiness.
+Potential future improvements include expanding automated tests, reproducibility, documentation and deployment processes.
 
 ## Disclaimer
 
